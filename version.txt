@@ -1,0 +1,6 @@
+1.0.0
+Release Date: 2024-01-19
+Features:
+- Calculator with basic operations
+- Comprehensive test suite
+- CI/CD pipeline with GitHub Actions
