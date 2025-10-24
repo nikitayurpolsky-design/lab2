@@ -47,3 +47,16 @@ class AdvancedCalculator:
             result *= i
         self.history.append(f"{n}! = {result}")
         return result
+    def percentage(self, value, percent):
+        """Вычисление процента от числа"""
+        result = value * (percent / 100)
+        self.history.append(f"{percent}% от {value} = {result}")
+        return result
+        
+    def square_root(self, n):
+        """Вычисление квадратного корня"""
+        if n < 0:
+            raise ValueError("Cannot calculate square root of negative number")
+        result = n ** 0.5
+        self.history.append(f"√{n} = {result}")
+        return result

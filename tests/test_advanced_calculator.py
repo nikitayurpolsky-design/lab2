@@ -29,3 +29,21 @@ def test_advanced_calculator_factorial_negative():
     calc = AdvancedCalculator()
     with pytest.raises(ValueError):
         calc.factorial(-1)
+def test_advanced_calculator_percentage():
+    """Тест вычисления процента"""
+    calc = AdvancedCalculator()
+    assert calc.percentage(100, 10) == 10.0
+    assert calc.percentage(50, 20) == 10.0
+    assert calc.history[-1] == "20% от 50 = 10.0"
+
+def test_advanced_calculator_square_root():
+    """Тест вычисления квадратного корня"""
+    calc = AdvancedCalculator()
+    assert calc.square_root(25) == 5.0
+    assert calc.square_root(9) == 3.0
+
+def test_advanced_calculator_square_root_negative():
+    """Тест квадратного корня отрицательного числа"""
+    calc = AdvancedCalculator()
+    with pytest.raises(ValueError):
+        calc.square_root(-4)
