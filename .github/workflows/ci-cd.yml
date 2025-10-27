@@ -105,3 +105,46 @@ jobs:
           git push
           echo "🚀 Documentation pushed to repository"
         fi
+# Добавьте этот job в ваш .github/workflows/ci-cd.yml
+  auto-merge:
+    needs: [build-and-test, documentation]  # Зависит от успешного выполнения тестов и документации
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request' && github.event.pull_request.draft == false
+    
+    steps:
+    - name: Check if PR is mergeable
+      id: check-merge
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const { data: pr } = await github.rest.pulls.get({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            pull_number: context.issue.number
+          });
+          
+          // Проверяем, что PR можно смержить
+          if (pr.mergeable && pr.mergeable_state === 'clean') {
+            console.log('✅ PR is ready for auto-merge');
+            core.setOutput('mergeable', 'true');
+          } else {
+            console.log('❌ PR is not ready for auto-merge. Status:', pr.mergeable_state);
+            core.setOutput('mergeable', 'false');
+          }
+    
+    - name: Auto-merge PR
+      if: steps.check-merge.outputs.mergeable == 'true'
+      uses: actions/github-script@v7
+      with:
+        script: |
+          try {
+            await github.rest.pulls.merge({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.issue.number,
+              merge_method: 'squash'  // Можно изменить на 'merge' или 'rebase'
+            });
+            console.log('✅ PR auto-merged successfully!');
+          } catch (error) {
+            console.log('❌ Auto-merge failed:', error.message);
+          }
