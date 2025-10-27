@@ -1,0 +1,25 @@
+name: Test Documentation Update
+
+on:
+  push:
+    branches: [ development ]
+
+jobs:
+  test-docs:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+    
+    - run: echo "Test: $(date)" > test_docs.txt
+    
+    - name: Commit test
+      run: |
+        git config user.name "GitHub Actions"
+        git config user.email "actions@github.com"
+        git add test_docs.txt
+        git commit -m "Test docs update" || exit 0
+        git push
